@@ -8,13 +8,13 @@ mapa = aprx.activeMap
 for capa in mapa.listLayers():
     if capa.isFeatureLayer and capa.supports("DATASOURCE"):
         try:
-            # Usa GetCount para verificar si tiene registros
             count = int(arcpy.management.GetCount(capa).getOutput(0))
             if count == 0:
+                # Usa supports("NAME") antes de acceder a .name
+                nombre = capa.name if capa.supports("NAME") else "Capa sin nombre"
                 mapa.removeLayer(capa)
-                print("Capa removida:", capa.name)
+                print("Capa removida:", nombre)
         except Exception as e:
-            print("Error con la capa '{}': {}".format(capa.name, e))
+            print("Error al procesar capa:", e)
 
-# Limpieza
 del aprx
