@@ -1,0 +1,20 @@
+import arcpy
+
+# Accede al proyecto y al mapa activo
+aprx = arcpy.mp.ArcGISProject("CURRENT")
+mapa = aprx.activeMap
+
+# Recorre las capas del mapa
+for capa in mapa.listLayers():
+    if capa.isFeatureLayer and capa.supports("DATASOURCE"):
+        try:
+            # Usa GetCount para verificar si tiene registros
+            count = int(arcpy.management.GetCount(capa).getOutput(0))
+            if count == 0:
+                mapa.removeLayer(capa)
+                print("Capa removida:", capa.name)
+        except Exception as e:
+            print("Error con la capa '{}': {}".format(capa.name, e))
+
+# Limpieza
+del aprx
